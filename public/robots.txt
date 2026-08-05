@@ -1,0 +1,7 @@
+# TODO: keep in sync with SITE_URL in src/app/core/config/app-config.ts once
+# the production domain is decided.
+User-agent: *
+Allow: /
+Disallow: /room/
+
+Sitemap: https://bunker.example/sitemap.xml

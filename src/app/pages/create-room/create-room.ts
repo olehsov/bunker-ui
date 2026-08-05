@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ApiService } from '../../core/services/api.service';
+import { SeoService } from '../../core/services/seo.service';
 import { SessionService } from '../../core/services/session.service';
 
 @Component({
@@ -31,6 +32,15 @@ export class CreateRoom {
   readonly ownerName = signal('');
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+
+  constructor() {
+    inject(SeoService).setPage({
+      title: 'Створити кімнату — Бункер онлайн українською',
+      description:
+        'Створіть кімнату для гри «Бункер» онлайн і запросіть друзів за кодом. Безкоштовно, без реєстрації.',
+      path: '/create',
+    });
+  }
 
   createRoom(): void {
     const name = this.ownerName().trim();

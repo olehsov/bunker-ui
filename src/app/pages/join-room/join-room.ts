@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ApiService } from '../../core/services/api.service';
+import { SeoService } from '../../core/services/seo.service';
 import { SessionService } from '../../core/services/session.service';
 
 @Component({
@@ -33,6 +34,15 @@ export class JoinRoom {
   readonly playerName = signal('');
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+
+  constructor() {
+    inject(SeoService).setPage({
+      title: 'Приєднатися до гри — Бункер онлайн українською',
+      description:
+        'Введіть код кімнати та приєднайтесь до гри «Бункер» онлайн з друзями. Безкоштовно, без реєстрації.',
+      path: '/join',
+    });
+  }
 
   joinRoom(): void {
     const code = this.code().trim();

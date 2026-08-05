@@ -2,9 +2,55 @@
 <html lang="uk">
   <head>
     <meta charset="utf-8" />
+    <!--
+      This default title is only what dynamic /room/:code/* pages show (they
+      don't set their own via SeoService, since they're private session pages
+      that stay out of search results). Home/Create/Join override it with
+      SEO-optimized titles via SeoService — see src/app/core/services/seo.service.ts.
+    -->
     <title>Бункер</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!--
+      SITE_URL below is a placeholder (see src/app/core/config/app-config.ts) —
+      replace every occurrence in this file, robots.txt and sitemap.xml with
+      the real production domain once it's decided.
+    -->
+    <meta
+      name="description"
+      content="Гра «Бункер» онлайн українською: зберіть компанію 4–16 гравців, розкривайте характеристики персонажів і голосуйте, хто отримає місце в бункері. Грати безкоштовно в браузері, без реєстрації."
+    />
+    <meta
+      name="keywords"
+      content="бункер, бункер онлайн, бункер українською, бункер онлайн українською, гра бункер, гра в бункер"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://bunker.example/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Бункер" />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:title" content="Бункер онлайн українською — безкоштовна браузерна гра" />
+    <meta
+      property="og:description"
+      content="Зберіть компанію 4–16 гравців, розкривайте характеристики персонажів і голосуйте, хто отримає місце в бункері. Безкоштовно, без реєстрації."
+    />
+    <meta property="og:url" content="https://bunker.example/" />
+    <meta property="og:image" content="https://bunker.example/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Бункер онлайн українською — безкоштовна браузерна гра" />
+    <meta
+      name="twitter:description"
+      content="Зберіть компанію 4–16 гравців, розкривайте характеристики персонажів і голосуйте, хто отримає місце в бункері. Безкоштовно, без реєстрації."
+    />
+    <meta name="twitter:image" content="https://bunker.example/og-image.png" />
+
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,6 +60,23 @@
     />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <script src="env.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Бункер",
+        "url": "https://bunker.example/",
+        "description": "Безкоштовна браузерна гра «Бункер» онлайн українською для компанії 4–16 гравців.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any (браузер)",
+        "inLanguage": "uk",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "UAH"
+        }
+      }
+    </script>
   </head>
   <body>
     <app-root></app-root>
