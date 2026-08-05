@@ -16,8 +16,8 @@ export const WS_BASE_URL = runtimeEnv?.wsBaseUrl || 'http://localhost:3000';
 export const WS_NAMESPACE = '/game';
 
 /**
- * TODO: replace with the real production domain once it's decided, and keep
- * it in sync with the same placeholder in index.html, robots.txt and
- * sitemap.xml. Used for canonical/OG URLs, which must be absolute.
+ * Cloud Run URL for bunker-ui. Keep in sync with index.html, robots.txt and
+ * sitemap.xml if this ever moves to a custom domain. Used for canonical/OG
+ * URLs, which must be absolute.
  */
-export const SITE_URL = 'https://bunker.example';
+export const SITE_URL = 'https://bunker-ui-708695421901.us-east1.run.app';
