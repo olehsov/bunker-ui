@@ -1,0 +1,51 @@
+<div class="game-over">
+  <div class="game-over__hero">
+    <mat-icon>emoji_events</mat-icon>
+    <h1>Гру завершено</h1>
+    <p>У бункер потрапили {{ survivors().length }} із {{ room().players.length }} гравців</p>
+  </div>
+
+  @if (bunker(); as b) {
+    <section class="card-surface details">
+      <h2>{{ b.name }}</h2>
+      <p>{{ b.description }}</p>
+      <div class="details__stats">
+        <span><mat-icon>square_foot</mat-icon> {{ b.areaSqm }} м²</span>
+        <span><mat-icon>schedule</mat-icon> {{ b.survivalDurationYears }} р. автономності</span>
+      </div>
+      <p class="details__food">{{ b.foodSupplyDescription }}</p>
+    </section>
+  }
+
+  @if (cataclysm(); as c) {
+    <section class="card-surface details">
+      <h2>{{ c.name }}</h2>
+      <p>{{ c.description }}</p>
+    </section>
+  }
+
+  <section class="group">
+    <h2>Вижили</h2>
+    <div class="group__grid">
+      @for (player of survivors(); track player.id) {
+        <app-player-panel [player]="player" />
+      }
+    </div>
+  </section>
+
+  @if (eliminated().length > 0) {
+    <section class="group">
+      <h2>Вигнані</h2>
+      <div class="group__grid">
+        @for (player of eliminated(); track player.id) {
+          <app-player-panel [player]="player" />
+        }
+      </div>
+    </section>
+  }
+
+  <button mat-stroked-button routerLink="/">
+    <mat-icon>home</mat-icon>
+    На головну
+  </button>
+</div>

@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Відкрити картку?</h2>
+
+<mat-dialog-content>
+  <p class="reveal-preview">
+    <mat-icon>{{ icons[data.category] }}</mat-icon>
+    <span class="reveal-preview__text">
+      <strong>{{ labels[data.category] }}</strong>
+      <span>{{ data.card.label }}@if (data.card.detail) { <em>({{ data.card.detail }})</em> }</span>
+    </span>
+  </p>
+  <p class="reveal-warning">
+    Цю властивість побачать усі гравці, і скасувати це буде неможливо.
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Скасувати</button>
+  <button mat-flat-button color="primary" (click)="confirm()">Відкрити</button>
+</mat-dialog-actions>

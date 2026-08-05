@@ -1,0 +1,40 @@
+<div class="page">
+  <a routerLink="/" class="back" mat-icon-button aria-label="Назад">
+    <mat-icon>arrow_back</mat-icon>
+  </a>
+
+  <div class="card">
+    <mat-icon class="card__icon">add_home</mat-icon>
+    <h1>Створити кімнату</h1>
+    <p class="card__hint">Ви станете власником кімнати та зможете обрати бункер і катаклізм.</p>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Ваше ім'я</mat-label>
+      <input
+        matInput
+        [(ngModel)]="ownerName"
+        (keydown.enter)="createRoom()"
+        maxlength="30"
+        autocomplete="off"
+      />
+    </mat-form-field>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <button
+      mat-flat-button
+      color="primary"
+      class="full-width"
+      [disabled]="loading()"
+      (click)="createRoom()"
+    >
+      @if (loading()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        Створити
+      }
+    </button>
+  </div>
+</div>

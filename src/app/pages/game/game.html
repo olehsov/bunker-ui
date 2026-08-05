@@ -1,0 +1,142 @@
+@if (room(); as r) {
+  <app-timer-bar [room]="r" />
+
+  @if (bunker() || cataclysm()) {
+    <div class="scenario" [class.scenario--expanded]="scenarioExpanded()">
+      <button class="scenario__summary" type="button" (click)="toggleScenario()">
+        @if (bunker(); as b) {
+          <span class="scenario__chip">
+            <mat-icon>foundation</mat-icon>
+            {{ b.name }}
+          </span>
+        }
+        @if (cataclysm(); as c) {
+          <span class="scenario__chip scenario__chip--cataclysm">
+            <mat-icon>warning</mat-icon>
+            {{ c.name }}
+          </span>
+        }
+        <mat-icon class="scenario__caret">{{ scenarioExpanded() ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </button>
+
+      @if (scenarioExpanded()) {
+        <div class="scenario__details">
+          @if (bunker(); as b) {
+            <div class="scenario__block">
+              <h3><mat-icon>foundation</mat-icon> {{ b.name }}</h3>
+              <p>{{ b.description }}</p>
+              <div class="scenario__stats">
+                <span><mat-icon>square_foot</mat-icon> {{ b.areaSqm }} м²</span>
+                <span><mat-icon>schedule</mat-icon> {{ b.survivalDurationYears }} р. автономності</span>
+              </div>
+              <p class="scenario__food">{{ b.foodSupplyDescription }}</p>
+            </div>
+          }
+          @if (cataclysm(); as c) {
+            <div class="scenario__block">
+              <h3><mat-icon>warning</mat-icon> {{ c.name }}</h3>
+              <p>{{ c.description }}</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (showBoard()) {
+    <div class="game">
+      @if (isOwner()) {
+        <div class="owner-bar">
+          @if (r.phase === RoomPhase.READY_FOR_ROUND || r.phase === RoomPhase.AWAITING_NEXT_ROUND) {
+            <button mat-flat-button color="primary" (click)="startRound()">
+              <mat-icon>play_arrow</mat-icon>
+              Розпочати раунд {{ r.round + 1 }}
+            </button>
+          } @else if (r.phase === RoomPhase.AWAITING_VOTE_START) {
+            <button mat-flat-button color="primary" (click)="startVoting()">
+              <mat-icon>how_to_vote</mat-icon>
+              Розпочати голосування
+            </button>
+          }
+        </div>
+      }
+
+      <div class="game__content">
+        <div class="board-wrapper">
+          <table
+            class="board"
+            cdkDropList
+            id="playersBoard"
+            [cdkDropListConnectedTo]="['traitsTray']"
+            [cdkDropListSortingDisabled]="true"
+            (cdkDropListDropped)="onBoardDrop($event)"
+          >
+            <thead>
+              <tr>
+                <th class="board__player-head">Гравець</th>
+                @for (category of categoryOrder; track category) {
+                  <th>
+                    <span class="board__col-label">
+                      <mat-icon>{{ categoryIcons[category] }}</mat-icon>
+                      {{ categoryLabels[category] }}
+                      @if (category === TraitCategory.PROFESSION) {
+                        <mat-icon
+                          class="board__info-icon"
+                          [matTooltip]="professionLevelsTooltip"
+                          matTooltipClass="multiline-tooltip"
+                        >
+                          info
+                        </mat-icon>
+                      }
+                      @if (category === TraitCategory.HOBBY) {
+                        <mat-icon
+                          class="board__info-icon"
+                          [matTooltip]="hobbyLevelsTooltip"
+                          matTooltipClass="multiline-tooltip"
+                        >
+                          info
+                        </mat-icon>
+                      }
+                    </span>
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (player of players(); track player.id) {
+                <tr app-player-row [player]="player" [active]="r.activePlayerId === player.id"></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (r.phase === RoomPhase.VOTING && me(); as me) {
+          <app-voting-panel
+            [room]="r"
+            [myPlayerId]="me.id"
+            [isOwner]="isOwner()"
+            (vote)="onVote($event)"
+            (endVoting)="onEndVoting()"
+            (restartVoting)="onRestartVoting()"
+          />
+        }
+      </div>
+
+      @if (me(); as me) {
+        <app-own-traits-tray
+          [me]="me"
+          [canReveal]="isMyTurn()"
+          [forcedCategory]="forcedCategory()"
+          (reveal)="onTrayReveal($event)"
+        />
+      }
+    </div>
+  } @else if (r.phase === RoomPhase.FINISHED) {
+    <app-game-over [room]="r" [bunker]="bunker()" [cataclysm]="cataclysm()" />
+  }
+} @else {
+  <div class="loading">
+    <mat-icon>hourglass_empty</mat-icon>
+    <p>З'єднання з кімнатою...</p>
+  </div>
+}

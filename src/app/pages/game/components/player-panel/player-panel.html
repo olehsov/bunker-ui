@@ -1,0 +1,40 @@
+<div
+  class="panel"
+  [class.panel--active]="active && !player.eliminated"
+  [class.panel--eliminated]="player.eliminated"
+  [class.panel--self]="player.isSelf"
+>
+  <header class="panel__header">
+    <mat-icon class="panel__avatar">
+      {{ player.eliminated ? 'block' : player.isOwner ? 'shield_person' : 'person' }}
+    </mat-icon>
+    <span class="panel__name">{{ player.name }}</span>
+
+    <span class="panel__badges">
+      @if (player.isSelf) {
+        <span class="tag tag--self">Ви</span>
+      }
+      @if (active && !player.eliminated) {
+        <span class="tag tag--active" matTooltip="Зараз хід цього гравця">Ходить</span>
+      }
+      @if (player.eliminated) {
+        <span class="tag tag--eliminated">Вигнаний</span>
+      }
+      @if (!player.connected) {
+        <mat-icon class="panel__offline" matTooltip="Немає з'єднання">wifi_off</mat-icon>
+      }
+    </span>
+  </header>
+
+  <div class="panel__grid">
+    @for (trait of player.traits; track trait.category) {
+      <app-trait-card
+        [category]="trait.category"
+        [card]="trait.card"
+        [revealed]="trait.revealed"
+        [publiclyRevealed]="isPubliclyRevealed(trait.category)"
+        [compact]="true"
+      />
+    }
+  </div>
+</div>

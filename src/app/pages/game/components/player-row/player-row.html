@@ -1,0 +1,49 @@
+<td
+  class="row__player"
+  [class.row__player--active]="active && !player.eliminated"
+  [class.row__player--eliminated]="player.eliminated"
+  [class.row__player--self]="player.isSelf"
+>
+  <div class="row__player_wrapper">
+    <mat-icon class="row__avatar">
+      {{ player.eliminated ? 'block' : player.isOwner ? 'shield_person' : 'person' }}
+    </mat-icon>
+    <span class="row__name">{{ player.name }}</span>
+    <span class="row__badges">
+    @if (player.isSelf) {
+      <span class="tag tag--self">Ви</span>
+    }
+      @if (active && !player.eliminated) {
+        <span class="tag tag--active" matTooltip="Зараз хід цього гравця">Ходить</span>
+      }
+      @if (player.eliminated) {
+        <span class="tag tag--eliminated">Вигнаний</span>
+      }
+      @if (!player.connected) {
+        <mat-icon class="row__offline" matTooltip="Немає з'єднання">wifi_off</mat-icon>
+      }
+  </span>
+  </div>
+</td>
+
+@for (trait of player.traits; track trait.category) {
+  <td
+    class="row__cell"
+    [class.row__cell--hidden]="!trait.revealed"
+    [class.row__cell--private]="trait.revealed && !isPubliclyRevealed(trait.category)"
+  >
+    @if (trait.revealed && trait.card) {
+      <span class="cell__label">{{ trait.card.label }}</span>
+      @if (trait.card.detail) {
+        <span class="cell__detail">{{ trait.card.detail }}</span>
+      }
+      @if (!isPubliclyRevealed(trait.category)) {
+        <mat-icon class="cell__private-flag" matTooltip="Бачите лише ви — інші поки не знають">
+          visibility
+        </mat-icon>
+      }
+    } @else {
+      <mat-icon class="cell__lock">lock</mat-icon>
+    }
+  </td>
+}

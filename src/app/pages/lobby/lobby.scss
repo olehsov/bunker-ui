@@ -1,0 +1,129 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.lobby {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1.5rem;
+
+    @media (max-width: 720px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.room-code {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  background: var(--mat-sys-surface-container-high);
+
+  &__label {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.8rem;
+  }
+
+  &__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.3rem;
+    font-family: 'Roboto Mono', monospace;
+  }
+}
+
+.players__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  background: var(--mat-sys-surface-container-low);
+
+  &--self {
+    outline: 1px solid var(--mat-sys-primary);
+  }
+
+  &__name {
+    flex: 1;
+    font-weight: 500;
+  }
+
+  &__badges {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  &__offline {
+    color: var(--mat-sys-error);
+    font-size: 1.1rem;
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+}
+
+.badge {
+  font-size: 0.75rem;
+  height: 24px;
+
+  &--owner {
+    --mat-chip-elevated-container-color: var(--mat-sys-tertiary-container);
+    --mat-chip-label-text-color: var(--mat-sys-on-tertiary-container);
+  }
+
+  &--ready {
+    --mat-chip-elevated-container-color: color-mix(in srgb, green 35%, transparent);
+  }
+
+  &--waiting {
+    --mat-chip-elevated-container-color: var(--mat-sys-surface-container-highest);
+  }
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.preview-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.start-btn {
+  height: 48px;
+}

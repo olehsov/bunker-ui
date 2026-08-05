@@ -1,0 +1,100 @@
+<div class="lobby">
+  <header class="lobby__header">
+    <div class="room-code" (click)="copyCode()" matTooltip="Скопіювати код">
+      <span class="room-code__label">Код кімнати</span>
+      <span class="room-code__value">{{ code }}</span>
+      <mat-icon>{{ codeCopied() ? 'check' : 'content_copy' }}</mat-icon>
+    </div>
+    <mat-chip-set>
+      <mat-chip>{{ playerCount() }} / 16 гравців</mat-chip>
+      @if (!connected()) {
+        <mat-chip class="badge badge--waiting">З'єднання...</mat-chip>
+      }
+    </mat-chip-set>
+  </header>
+
+  <div class="lobby__body">
+    <section class="players card-surface">
+      <h2>Гравці</h2>
+      <ul class="players__list">
+        @for (player of players(); track player.id) {
+          <li class="player" [class.player--self]="player.isSelf">
+            <mat-icon class="player__avatar">{{ player.isOwner ? 'shield_person' : 'person' }}</mat-icon>
+            <span class="player__name">{{ player.name }}</span>
+            <span class="player__badges">
+              @if (player.isOwner) {
+                <mat-chip class="badge badge--owner">Власник</mat-chip>
+              } @else if (player.ready) {
+                <mat-chip class="badge badge--ready">Готовий</mat-chip>
+              } @else {
+                <mat-chip class="badge badge--waiting">Очікуємо</mat-chip>
+              }
+              @if (!player.connected) {
+                <mat-icon class="player__offline" matTooltip="Немає з'єднання">wifi_off</mat-icon>
+              }
+            </span>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="settings card-surface">
+      <h2>Ваш профіль</h2>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Ваше ім'я</mat-label>
+        <input matInput [(ngModel)]="nameDraft" (blur)="saveName()" (keydown.enter)="saveName()" maxlength="30" />
+      </mat-form-field>
+
+      @if (!isOwner()) {
+        <button mat-stroked-button class="full-width" (click)="toggleReady()">
+          <mat-icon>{{ me()?.ready ? 'close' : 'check' }}</mat-icon>
+          {{ me()?.ready ? 'Скасувати готовність' : "Я готовий" }}
+        </button>
+      }
+
+      <mat-divider />
+
+      <h2>Бункер і катаклізм</h2>
+      @if (isOwner()) {
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Бункер</mat-label>
+          <mat-select [value]="room()?.bunkerId" (selectionChange)="onBunkerChange($event.value)">
+            @for (bunker of bunkers(); track bunker.id) {
+              <mat-option [value]="bunker.id">{{ bunker.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Катаклізм</mat-label>
+          <mat-select [value]="room()?.cataclysmId" (selectionChange)="onCataclysmChange($event.value)">
+            @for (cataclysm of cataclysms(); track cataclysm.id) {
+              <mat-option [value]="cataclysm.id">{{ cataclysm.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <p class="hint">Якщо не обрати — визначиться випадково на старті гри.</p>
+      } @else {
+        <p class="preview-line">
+          <mat-icon>warehouse</mat-icon>
+          {{ selectedBunker()?.name ?? 'Власник ще обирає бункер...' }}
+        </p>
+        <p class="preview-line">
+          <mat-icon>bolt</mat-icon>
+          {{ selectedCataclysm()?.name ?? 'Власник ще обирає катаклізм...' }}
+        </p>
+      }
+
+      @if (isOwner()) {
+        <mat-divider />
+        <button mat-flat-button color="primary" class="full-width start-btn" [disabled]="!canStart()" (click)="startGame()">
+          <mat-icon>play_arrow</mat-icon>
+          Розпочати гру
+        </button>
+        @if (startHint()) {
+          <p class="hint hint--warn">{{ startHint() }}</p>
+        }
+      }
+    </section>
+  </div>
+</div>

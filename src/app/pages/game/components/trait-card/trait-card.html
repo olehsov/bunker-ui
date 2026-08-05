@@ -1,0 +1,38 @@
+<div
+  class="trait-card"
+  [class.trait-card--revealed]="revealed"
+  [class.trait-card--hidden]="!revealed"
+  [class.trait-card--private]="revealed && !publiclyRevealed"
+  [class.trait-card--interactive]="interactive"
+  [class.trait-card--compact]="compact"
+  [attr.role]="interactive ? 'button' : null"
+  [attr.tabindex]="interactive ? 0 : null"
+  [attr.aria-label]="interactive ? 'Відкрити властивість ' + labels[category] : null"
+  (click)="onClick()"
+  (keydown.enter)="onClick()"
+  (keydown.space)="onClick(); $event.preventDefault()"
+>
+  <div class="trait-card__category">
+    <mat-icon>{{ icons[category] }}</mat-icon>
+    <span>{{ labels[category] }}</span>
+  </div>
+
+  @if (revealed && card) {
+    <div class="trait-card__content">
+      <span class="trait-card__label">{{ card.label }}</span>
+      @if (card.detail) {
+        <span class="trait-card__detail">{{ card.detail }}</span>
+      }
+    </div>
+    @if (!publiclyRevealed) {
+      <div class="trait-card__private-flag" matTooltip="Бачите лише ви — інші поки не знають">
+        <mat-icon>visibility</mat-icon>
+      </div>
+    }
+  } @else {
+    <div class="trait-card__back">
+      <mat-icon>lock</mat-icon>
+      <span>Приховано</span>
+    </div>
+  }
+</div>

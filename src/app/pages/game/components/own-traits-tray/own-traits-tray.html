@@ -1,0 +1,34 @@
+<div class="tray">
+  <div class="tray__label">
+    <span>Ваші картки</span>
+    @if (canReveal()) {
+      <span class="tray__hint">Натисніть або перетягніть картку вгору, щоб відкрити</span>
+    }
+  </div>
+
+  <div
+    class="tray__list"
+    cdkDropList
+    id="traitsTray"
+    cdkDropListOrientation="horizontal"
+    [cdkDropListConnectedTo]="['playersBoard']"
+    [cdkDropListSortingDisabled]="true"
+  >
+    @for (trait of hiddenTraits(); track trait.category) {
+      <div
+        cdkDrag
+        [cdkDragData]="trait.category"
+        [cdkDragDisabled]="!isRevealable(trait)"
+      >
+        <app-trait-card
+          [category]="trait.category"
+          [card]="trait.card"
+          [revealed]="true"
+          [publiclyRevealed]="false"
+          [interactive]="isRevealable(trait)"
+          (activated)="onCardClick(trait)"
+        />
+      </div>
+    }
+  </div>
+</div>

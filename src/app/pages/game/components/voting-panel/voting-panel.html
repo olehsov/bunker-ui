@@ -1,0 +1,53 @@
+<div class="voting card-surface">
+  <h2>Голосування</h2>
+
+  @if (isTie()) {
+    <div class="tie-banner">
+      <mat-icon>balance</mat-icon>
+      <span>Нічия! Потрібно перезапустити голосування.</span>
+      @if (isOwner()) {
+        <button mat-flat-button color="primary" (click)="restartVoting.emit()">
+          Перезапустити голосування
+        </button>
+      }
+    </div>
+  } @else {
+    <p class="voting__status">Проголосувало: {{ votedCount() }} / {{ candidates().length }}</p>
+
+    <ul class="candidates">
+      @for (candidate of candidates(); track candidate.id) {
+        <li
+          class="candidate"
+          [class.candidate--me]="candidate.id === myPlayerId()"
+          [class.candidate--selected]="myVote() === candidate.id"
+          [class.candidate--disabled]="candidate.id === myPlayerId()"
+          role="button"
+          [attr.tabindex]="candidate.id === myPlayerId() ? null : 0"
+          [attr.aria-label]="'Голосувати за ' + candidate.name"
+          (click)="voteFor(candidate.id)"
+          (keydown.enter)="voteFor(candidate.id)"
+          (keydown.space)="voteFor(candidate.id); $event.preventDefault()"
+        >
+          <mat-icon>person</mat-icon>
+          <span class="candidate__name">{{ candidate.name }}</span>
+          <span class="candidate__votes">{{ voteCountFor(candidate.id) }}</span>
+          @if (myVote() === candidate.id) {
+            <mat-icon class="candidate__check">check_circle</mat-icon>
+          }
+        </li>
+      }
+    </ul>
+
+    @if (isOwner()) {
+      <button
+        mat-flat-button
+        color="primary"
+        class="full-width"
+        [disabled]="votedCount() < candidates().length"
+        (click)="endVoting.emit()"
+      >
+        Завершити голосування
+      </button>
+    }
+  }
+</div>

@@ -1,0 +1,22 @@
+<div class="bar">
+  <div class="bar__section">
+    <mat-icon>calendar_view_week</mat-icon>
+    <span>Раунд {{ room()?.round || 0 }} / {{ room()?.totalRounds || 5 }}</span>
+  </div>
+
+  <div class="bar__section bar__section--center">
+    <span class="bar__phase">{{ phaseLabel() }}</span>
+    @if (activePlayerName() && isRevealPhase()) {
+      <span class="bar__active">Хід: {{ activePlayerName() }}</span>
+    }
+  </div>
+
+  <div class="bar__section">
+    @if (showTimer()) {
+      <div class="timer" [class.timer--warn]="secondsLeft() <= 10">
+        <mat-icon>timer</mat-icon>
+        <span>{{ secondsLeft() }}с</span>
+      </div>
+    }
+  </div>
+</div>
