@@ -18,7 +18,12 @@ npm install
 npm start   # http://localhost:4200, очікує backend на http://localhost:3000
 ```
 
-Backend URL захардкожений у [`src/app/core/config/app-config.ts`](src/app/core/config/app-config.ts) — змінити тут, якщо API піднято на іншому хості.
+Backend URL за замовчуванням — `http://localhost:3000` (fallback у
+[`src/app/core/config/app-config.ts`](src/app/core/config/app-config.ts)). У
+Docker-образі він підміняється в рантаймі через `window.__env`
+(`public/env.js`, генерується з `API_BASE_URL`/`WS_BASE_URL` при старті
+контейнера — див. `docker-entrypoint.d/`), так що один образ можна
+спрямувати на різні бекенди без перебілду.
 
 ## Сторінки
 
@@ -50,9 +55,12 @@ Backend URL захардкожений у [`src/app/core/config/app-config.ts`](
   - drag-and-drop картки з трею (`cdkDropList#traitsTray`) на дошку
     гравців (`cdkDropList#playersBoard`) — перетягування саме по собі є
     підтвердженням дії.
-- **Таймери (60с хід / 60с голосування) — суто клієнтські**, без
-  server-enforced дедлайнів (як і задумано в ТЗ): скидаються локально при
-  зміні `activePlayerId` або `voting.sessionIndex`.
+- **Таймери (60с хід / 60с голосування) — server-enforced.** Бекенд ставить
+  `phaseDeadline` (epoch ms) при кожній зміні `activePlayerId`/сесії
+  голосування; фронтенд лише рахує залишок від цього таймстемпу (переживає
+  рефреш сторінки), а якщо гравець не встиг — бекенд сам через
+  `setTimeout` відкриває випадкову ще не розкриту властивість і передає хід
+  далі (`game.gateway.ts`, `scheduleTurnTimeout`).
 - Інтерактивні картки й кандидати голосування мають `role="button"` +
   `tabindex` + обробку Enter/Space — це не декоративні `div`, а keyboard/
   screen-reader-доступні елементи.
@@ -81,3 +89,38 @@ src/app/
         voting-panel/           голосування, підрахунок, нічия
         game-over/              фінальний екран з повним розкриттям
 ```
+
+## E2E-тести (Cypress)
+
+```bash
+npm start          # термінал 1: UI на :4200
+# і в bunker-api:   npm run start:dev   # термінал 2: API на :3000
+
+npm run e2e         # headless прогін усього набору
+npm run e2e:open    # інтерактивний Cypress Runner
+```
+
+Гра — realtime і мультиплеєрна (мінімум 4 гравці), а Cypress керує лише
+одним реальним браузером. Інших гравців симулює
+[`cypress/support/botManager.ts`](cypress/support/botManager.ts) — Node-сайд
+`socket.io-client`-з'єднання напряму до бекенда (ті самі REST/WS виклики,
+що й у `ApiService`/`SocketService`), зареєстровані як Cypress `task`
+(`cy.botCreateRoom`, `cy.botRevealTurn`, `cy.botVoteRandom` тощо, див.
+[`cypress/support/commands.ts`](cypress/support/commands.ts)). Реальний
+браузер завжди керує власником кімнати.
+
+| Спек | Що покриває |
+|---|---|
+| `home.cy.ts` | Головна сторінка, навігація, SEO-теги |
+| `create-room.cy.ts` / `join-room.cy.ts` | Валідація форм, помилки бекенда, успішні create/join |
+| `lobby.cy.ts` | Готовність, лічильник гравців, вибір бункера/катаклізму, rename, wifi-off при дисконекті |
+| `game-reveal.cy.ts` | Черга ходу, примусова категорія PROFESSION у 1-му раунді, відхилення дії поза чергою |
+| `game-timer.cy.ts` | Відлік таймера, **переживання рефрешу сторінки**, реальне 60-секундне очікування авто-відкриття по таймауту |
+| `game-voting.cy.ts` | Голосування, елімінація, нічия + перезапуск |
+| `game-full-flow.cy.ts` | Повна гра: 5 раундів, 2 елімінації, екран Game Over |
+| `edge-cases.cy.ts` | Редіректи без сесії, персистентність сесії, MAX_PLAYERS, leave-room API |
+| `seo.cy.ts` | Унікальні title/canonical/OG на 3 сторінках, robots.txt, sitemap.xml, prerendered-контент |
+
+Один тест у `game-timer.cy.ts` навмисно чекає повні 60с (реальний
+`REVEAL_TURN_SECONDS` бекенда, не замокано) — тому повний прогін триває
+~1.5 хв, а не кілька секунд.

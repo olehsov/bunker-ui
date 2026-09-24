@@ -30,6 +30,11 @@ yarn-error.log
 !.vscode/mcp.json
 .history/*
 
+# Cypress
+/cypress/screenshots
+/cypress/videos
+/cypress/downloads
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/
