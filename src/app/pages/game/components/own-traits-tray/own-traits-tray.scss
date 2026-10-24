@@ -33,13 +33,30 @@
   font-weight: 400;
 }
 
-.tray__list {
+.tray__row {
   display: flex;
   gap: 0.6rem;
   overflow-x: auto;
   padding-bottom: 0.25rem;
-  min-height: 100px;
   scrollbar-width: thin;
+}
+
+.tray__special,
+.tray__list {
+  display: flex;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.tray__list {
+  min-height: 100px;
+}
+
+.tray__divider {
+  flex-shrink: 0;
+  width: 1px;
+  margin: 0.25rem 0.2rem;
+  background: var(--mat-sys-outline-variant);
 }
 
 .tray__empty {

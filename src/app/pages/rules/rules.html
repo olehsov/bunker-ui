@@ -25,6 +25,22 @@
   </section>
 
   <section class="rules__section">
+    <h2>Особливі умови</h2>
+    <p class="rules__text">
+      Крім характеристик, кожен отримує 2 картки особливих умов. Їх можна зіграти будь-коли під час
+      гри — навіть не у свій хід. Зіграну картку бачать усі.
+    </p>
+    <ul class="special">
+      @for (card of specialCards; track card.title) {
+        <li>
+          <mat-icon>{{ card.icon }}</mat-icon>
+          <span><strong>{{ card.title }}</strong> — {{ card.text }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="rules__section">
     <h2>Хід гри</h2>
     <ol class="timeline">
       @for (phase of phases; track phase.title) {

@@ -174,14 +174,18 @@
             (restartVoting)="onRestartVoting()"
           />
         }
+
+        <app-game-log [entries]="r.log" />
       </div>
 
       @if (me(); as me) {
         <app-own-traits-tray
           [me]="me"
+          [room]="r"
           [canReveal]="isMyTurn()"
           [forcedCategory]="forcedCategory()"
           (reveal)="onTrayReveal($event)"
+          (playSpecial)="onPlaySpecial($event)"
         />
       }
     </div>

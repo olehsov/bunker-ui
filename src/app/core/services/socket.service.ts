@@ -83,6 +83,10 @@ export class SocketService {
     this.socket?.emit('player:revealTrait', { category });
   }
 
+  playSpecialCard(cardId: string, targetPlayerId: string | null): void {
+    this.socket?.emit('player:playSpecialCard', { cardId, targetPlayerId });
+  }
+
   startVoting(): void {
     this.socket?.emit('owner:startVoting');
   }

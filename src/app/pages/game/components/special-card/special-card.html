@@ -1,0 +1,19 @@
+<div
+  class="special-card"
+  [class.special-card--playable]="playable"
+  [class.special-card--used]="card.used"
+  [class.special-card--compact]="compact"
+  [attr.role]="playable ? 'button' : null"
+  [attr.tabindex]="playable ? 0 : null"
+  [attr.aria-label]="playable ? 'Зіграти особливу умову ' + card.title : null"
+  [matTooltip]="playable ? card.description : disabledReason || card.description"
+  (click)="onClick()"
+  (keydown.enter)="onClick()"
+  (keydown.space)="onClick(); $event.preventDefault()"
+>
+  <div class="special-card__head">
+    <mat-icon>{{ icons[card.type] }}</mat-icon>
+    <span>{{ card.used ? 'Зіграно' : card.timing === 'VOTING' ? 'Голосування' : 'Особлива умова' }}</span>
+  </div>
+  <span class="special-card__title">{{ card.title }}</span>
+</div>

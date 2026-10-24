@@ -26,7 +26,8 @@ import {
 } from '../../core/models/room.models';
 import { TimerBar } from './components/timer-bar/timer-bar';
 import { PlayerRow } from './components/player-row/player-row';
-import { OwnTraitsTray } from './components/own-traits-tray/own-traits-tray';
+import { OwnTraitsTray, PlaySpecialCardEvent } from './components/own-traits-tray/own-traits-tray';
+import { GameLog } from './components/game-log/game-log';
 import { VotingPanel } from './components/voting-panel/voting-panel';
 import { GameOver } from './components/game-over/game-over';
 
@@ -42,6 +43,7 @@ import { GameOver } from './components/game-over/game-over';
     OwnTraitsTray,
     VotingPanel,
     GameOver,
+    GameLog,
   ],
   templateUrl: './game.html',
   styleUrl: './game.scss',
@@ -95,8 +97,12 @@ export class Game {
     return !!room && !!me && room.phase === RoomPhase.REVEAL && room.activePlayerId === me.id;
   });
 
+  /** Round 1 opens professions, unless a "Викриття" card already exposed mine. */
   readonly forcedCategory = computed<TraitCategory | null>(() =>
-    this.room()?.round === 1 ? TraitCategory.PROFESSION : null,
+    this.room()?.round === 1 &&
+    !this.me()?.publiclyRevealedCategories.includes(TraitCategory.PROFESSION)
+      ? TraitCategory.PROFESSION
+      : null,
   );
 
   readonly categoryOrder = TRAIT_CATEGORY_ORDER;
@@ -148,6 +154,28 @@ export class Game {
       this.title.setTitle(myTurn ? '● Ваш хід — Бункер' : 'Бункер');
     });
     this.destroyRef.onDestroy(() => this.title.setTitle('Бункер'));
+
+    // Toast special cards played since the last snapshot; the first snapshot
+    // only sets the baseline so a refresh doesn't replay old events.
+    let lastLogId: number | null = null;
+    effect(() => {
+      const log = this.room()?.log ?? [];
+      const newestId = log.at(-1)?.id ?? 0;
+      if (lastLogId !== null) {
+        const fresh = log.filter((e) => e.id > lastLogId! && e.kind === 'card');
+        if (fresh.length) {
+          this.snackBar.open(fresh.map((e) => e.text).join('\n'), 'Ок', {
+            duration: 5000,
+            panelClass: 'multiline-snack',
+          });
+        }
+      }
+      lastLogId = newestId;
+    });
+  }
+
+  onPlaySpecial(event: PlaySpecialCardEvent): void {
+    this.socket.playSpecialCard(event.cardId, event.targetPlayerId);
   }
 
   toggleSound(): void {

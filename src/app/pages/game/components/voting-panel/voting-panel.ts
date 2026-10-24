@@ -27,15 +27,27 @@ export class VotingPanel {
 
   readonly votedCount = computed(() => Object.keys(this.room().voting?.votes ?? {}).length);
 
+  isImmune(playerId: string): boolean {
+    return this.room().voting?.immunePlayerIds.includes(playerId) ?? false;
+  }
+
+  isDoubleVoter(playerId: string): boolean {
+    return this.room().voting?.doubleVoterIds.includes(playerId) ?? false;
+  }
+
+  canVoteFor(targetId: string): boolean {
+    return targetId !== this.myPlayerId() && !this.isImmune(targetId);
+  }
+
   voteFor(targetId: string): void {
-    if (targetId === this.myPlayerId()) {
+    if (!this.canVoteFor(targetId)) {
       return;
     }
     this.vote.emit(targetId);
   }
 
   votePercent(candidateId: string): number {
-    const total = this.votedCount();
+    const total = Object.values(this.room().voting?.voteCounts ?? {}).reduce((a, b) => a + b, 0);
     return total ? (this.voteCountFor(candidateId) / total) * 100 : 0;
   }
 

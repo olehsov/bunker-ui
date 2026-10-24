@@ -236,3 +236,13 @@ h3 {
 .note-menu__save {
   align-self: flex-end;
 }
+
+.multiline-snack .mat-mdc-snack-bar-label {
+  white-space: pre-line;
+}
+
+.mat-mdc-snack-bar-container {
+  --mat-snack-bar-container-color: var(--mat-sys-surface-container-highest);
+  --mat-snack-bar-supporting-text-color: var(--mat-sys-on-surface);
+  --mat-snack-bar-button-color: var(--mat-sys-primary);
+}

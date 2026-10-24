@@ -24,6 +24,18 @@ export class Rules {
   readonly labels = TRAIT_CATEGORY_LABELS;
   readonly icons = TRAIT_CATEGORY_ICONS;
 
+  readonly specialCards = [
+    { icon: 'swap_horiz', title: 'Обмін', text: 'поміняйтеся професією, здоровʼям, багажем чи фобією з іншим гравцем.' },
+    { icon: 'casino', title: 'Нова карта', text: 'замініть свою характеристику на випадкову.' },
+    { icon: 'local_fire_department', title: 'Крадіжка / Зараження', text: 'зіпсуйте характеристику іншого гравця.' },
+    { icon: 'medical_services', title: 'Аптечка', text: 'повністю вилікуйте будь-кого, зокрема себе.' },
+    { icon: 'visibility', title: 'Шпигун', text: 'таємно подивіться приховану характеристику іншого гравця.' },
+    { icon: 'flashlight_on', title: 'Викриття', text: 'змусьте гравця відкрити випадкову характеристику.' },
+    { icon: 'shield', title: 'Імунітет', text: 'під час голосування за вас не можна голосувати.' },
+    { icon: 'exposure_plus_2', title: 'Подвійний голос', text: 'ваш голос у голосуванні рахується двічі.' },
+    { icon: 'restart_alt', title: 'Переголосування', text: 'скасуйте всі поточні голоси.' },
+  ];
+
   readonly phases = [
     {
       title: 'Лобі',

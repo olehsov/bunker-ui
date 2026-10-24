@@ -25,9 +25,9 @@
           class="candidate"
           [class.candidate--me]="candidate.id === myPlayerId()"
           [class.candidate--selected]="myVote() === candidate.id"
-          [class.candidate--disabled]="candidate.id === myPlayerId()"
+          [class.candidate--disabled]="!canVoteFor(candidate.id)"
           role="button"
-          [attr.tabindex]="candidate.id === myPlayerId() ? null : 0"
+          [attr.tabindex]="canVoteFor(candidate.id) ? 0 : null"
           [attr.aria-label]="'Голосувати за ' + candidate.name"
           [attr.aria-pressed]="myVote() === candidate.id"
           (click)="voteFor(candidate.id)"
@@ -42,6 +42,16 @@
               <small>ви</small>
             }
           </span>
+          @if (isImmune(candidate.id)) {
+            <span class="candidate__flag" title="Імунітет: за цього гравця зараз не голосують">
+              <mat-icon>shield</mat-icon>Імунітет
+            </span>
+          }
+          @if (isDoubleVoter(candidate.id)) {
+            <span class="candidate__flag" title="Голос цього гравця рахується двічі">
+              <mat-icon>exposure_plus_2</mat-icon>
+            </span>
+          }
           @if (myVote() === candidate.id) {
             <mat-icon class="candidate__check">check_circle</mat-icon>
           }
