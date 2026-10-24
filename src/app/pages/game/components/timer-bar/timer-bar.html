@@ -1,7 +1,11 @@
 <div class="bar">
   <div class="bar__section">
-    <mat-icon>calendar_view_week</mat-icon>
-    <span>Раунд {{ room()?.round || 0 }} / {{ room()?.totalRounds || 5 }}</span>
+    <div class="rounds" [attr.aria-label]="'Раунд ' + (room()?.round || 0) + ' з ' + totalRounds()">
+      @for (r of roundDots(); track $index) {
+        <span class="rounds__dot" [class.rounds__dot--done]="r === 'done'" [class.rounds__dot--current]="r === 'current'"></span>
+      }
+    </div>
+    <span class="bar__round">Раунд {{ room()?.round || 0 }} / {{ totalRounds() }}</span>
   </div>
 
   <div class="bar__section bar__section--center">
@@ -11,12 +15,24 @@
     }
   </div>
 
-  <div class="bar__section">
+  <div class="bar__section bar__section--end">
     @if (showTimer()) {
-      <div class="timer" [class.timer--warn]="secondsLeft() <= 10">
-        <mat-icon>timer</mat-icon>
-        <span>{{ secondsLeft() }}с</span>
-      </div>
+      <span class="timer" [class.timer--warn]="secondsLeft() <= 10">
+        <span>{{ secondsLeft() }}</span><small>с</small>
+      </span>
     }
+    <button
+      mat-icon-button
+      class="bar__sound"
+      (click)="toggleSound.emit()"
+      [attr.aria-label]="soundOn() ? 'Вимкнути звук' : 'Увімкнути звук'"
+      [matTooltip]="soundOn() ? 'Звук ходу увімкнено' : 'Звук ходу вимкнено'"
+    >
+      <mat-icon>{{ soundOn() ? 'notifications_active' : 'notifications_off' }}</mat-icon>
+    </button>
   </div>
+
+  @if (showTimer()) {
+    <span class="bar__progress" [class.bar__progress--warn]="secondsLeft() <= 10" [style.width.%]="progress()"></span>
+  }
 </div>

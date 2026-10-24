@@ -4,7 +4,7 @@ describe('Home page', () => {
   });
 
   it('shows the hero content', () => {
-    cy.contains('h1', 'БУНКЕР').should('be.visible');
+    cy.contains('h1', 'Бункер').should('be.visible');
     cy.contains('Катастрофа сталася').should('be.visible');
   });
 
@@ -16,6 +16,12 @@ describe('Home page', () => {
   it('navigates to /join', () => {
     cy.contains('button', 'Приєднатись до гри').click();
     cy.url().should('include', '/join');
+  });
+
+  it('navigates to /rules', () => {
+    cy.contains('a', 'Правила').click();
+    cy.url().should('include', '/rules');
+    cy.contains('h1', 'Правила гри').should('be.visible');
   });
 
   it('sets the SEO title and description', () => {

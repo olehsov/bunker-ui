@@ -1,17 +1,17 @@
-<div class="page">
-  <a routerLink="/" class="back" mat-icon-button aria-label="Назад">
+<div class="form-page">
+  <a routerLink="/" class="form-page__back" mat-icon-button aria-label="Назад">
     <mat-icon>arrow_back</mat-icon>
   </a>
 
-  <div class="card">
-    <mat-icon class="card__icon">meeting_room</mat-icon>
-    <h1>Приєднатись до гри</h1>
-    <p class="card__hint">Введіть код кімнати, який вам надіслав власник.</p>
+  <div class="form-page__card">
+    <h1 class="form-page__title">Приєднатись до гри</h1>
+    <p class="form-page__lead">Введіть код кімнати, який надіслав власник, або відкрийте його посилання-запрошення.</p>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Код кімнати</mat-label>
       <input
         matInput
+        class="code-input"
         [(ngModel)]="code"
         maxlength="6"
         autocomplete="off"
@@ -26,21 +26,15 @@
         [(ngModel)]="playerName"
         (keydown.enter)="joinRoom()"
         maxlength="30"
-        autocomplete="off"
+        autocomplete="nickname"
       />
     </mat-form-field>
 
     @if (error()) {
-      <p class="error">{{ error() }}</p>
+      <p class="form-page__error">{{ error() }}</p>
     }
 
-    <button
-      mat-flat-button
-      color="primary"
-      class="full-width"
-      [disabled]="loading()"
-      (click)="joinRoom()"
-    >
+    <button mat-flat-button class="full-width btn-lg" [disabled]="loading()" (click)="joinRoom()">
       @if (loading()) {
         <mat-spinner diameter="20" />
       } @else {

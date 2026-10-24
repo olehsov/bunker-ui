@@ -1,24 +1,41 @@
-<div class="hero">
-  <mat-icon class="hero__icon">warehouse</mat-icon>
-  <h1 class="hero__title">БУНКЕР</h1>
-  <p class="hero__subtitle">
-    Катастрофа сталася. Місць у бункері не вистачить на всіх.
-    Доведи, чому вижити повинен саме ти.
-  </p>
+<div class="home">
+  <nav class="nav">
+    <span class="nav__brand">
+      <span class="nav__logo"><mat-icon>shelves</mat-icon></span>
+      Бункер
+    </span>
+    <a mat-button routerLink="/rules">Правила</a>
+  </nav>
 
-  <div class="hero__actions">
-    <button mat-flat-button color="primary" routerLink="/create">
-      <mat-icon>add_home</mat-icon>
-      Створити кімнату
-    </button>
-    <button mat-stroked-button routerLink="/join">
-      <mat-icon>meeting_room</mat-icon>
-      Приєднатись до гри
-    </button>
-  </div>
+  <main class="hero">
+    <span class="hero__eyebrow">Соціальна гра на виживання · 4–16 гравців</span>
+    <h1 class="hero__title">Бункер</h1>
+    <p class="hero__subtitle">
+      Катастрофа сталася. Місць у бункері не вистачить на всіх.
+      Доведи, чому вижити повинен саме ти.
+    </p>
 
-  <p class="hero__seo-note">
+    <div class="hero__actions">
+      <button mat-flat-button class="btn-lg" routerLink="/create">
+        Створити кімнату
+        <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+      </button>
+      <button mat-stroked-button class="btn-lg" routerLink="/join">Приєднатись до гри</button>
+    </div>
+
+    <ul class="steps">
+      @for (step of steps; track step.title; let i = $index) {
+        <li class="step">
+          <span class="step__num">0{{ i + 1 }}</span>
+          <strong>{{ step.title }}</strong>
+          <span>{{ step.text }}</span>
+        </li>
+      }
+    </ul>
+  </main>
+
+  <footer class="footer">
     Безкоштовна гра «Бункер» онлайн українською — грайте з друзями прямо в браузері, без реєстрації
     та застосунків.
-  </p>
+  </footer>
 </div>

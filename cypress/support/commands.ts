@@ -115,7 +115,7 @@ Cypress.Commands.add('startGameWithBots', (realOwnerName: string, botNames: stri
         }),
       )
       .then(() => {
-        cy.contains('mat-chip', '/ 16 гравців').should('contain', `${botNames.length + 1} / 16`);
+        cy.contains('.lobby__count', '/ 16 гравців').should('contain', `${botNames.length + 1} / 16`);
         cy.contains('button', 'Розпочати гру').should('be.enabled').click();
         cy.url().should('include', `/room/${code}/game`);
         cy.contains('button', 'Розпочати раунд 1').click();

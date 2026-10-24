@@ -14,24 +14,71 @@ html {
         primary: mat.$orange-palette,
         tertiary: mat.$red-palette,
       ),
-      typography: Roboto,
-      density: 0,
+      typography: (
+        plain-family: 'Inter, system-ui, sans-serif',
+        brand-family: 'Inter, system-ui, sans-serif',
+      ),
+      density: -1,
     )
   );
+
+  // Minimal look: the M3 dark palette tints every surface brown with the
+  // orange seed, so surfaces are pinned to neutral greys and the accent is
+  // used only where it carries meaning (primary action, active turn, timer).
+  --mat-sys-surface: #09090b;
+  --mat-sys-surface-container-lowest: #09090b;
+  --mat-sys-surface-container-low: #0f0f12;
+  --mat-sys-surface-container: #131316;
+  --mat-sys-surface-container-high: #19191d;
+  --mat-sys-surface-container-highest: #212126;
+  --mat-sys-surface-bright: #26262b;
+  --mat-sys-on-surface: #ededef;
+  --mat-sys-on-surface-variant: #8b8b93;
+  --mat-sys-outline: #3a3a41;
+  --mat-sys-outline-variant: #232328;
+  --mat-sys-primary: #fb923c;
+  --mat-sys-on-primary: #1a0d02;
+  --mat-sys-primary-container: rgba(251, 146, 60, 0.12);
+  --mat-sys-on-primary-container: #fdba74;
+  --mat-sys-secondary-container: #26262b;
+  --mat-sys-on-secondary-container: #ededef;
+  --mat-sys-tertiary: #a78bfa;
+  --mat-sys-tertiary-container: rgba(167, 139, 250, 0.12);
+  --mat-sys-on-tertiary-container: #c4b5fd;
+  --mat-sys-error: #f87171;
+  --mat-sys-error-container: rgba(248, 113, 113, 0.12);
+  --mat-sys-on-error-container: #fca5a5;
+
+  --mat-button-filled-container-shape: 10px;
+  --mat-button-outlined-container-shape: 10px;
+  --mat-button-text-container-shape: 10px;
+  --mat-button-protected-container-shape: 10px;
+  --mat-button-outlined-outline-color: var(--mat-sys-outline);
+  --mat-button-outlined-label-text-color: var(--mat-sys-on-surface);
+  --mat-button-text-label-text-color: var(--mat-sys-on-surface);
+  --mat-form-field-outlined-container-shape: 10px;
+  --mat-form-field-outlined-outline-color: var(--mat-sys-outline);
+  --mat-dialog-container-shape: 16px;
+  --mat-dialog-container-color: var(--mat-sys-surface-container);
+  --mat-select-panel-background-color: var(--mat-sys-surface-container-high);
+  --mat-snack-bar-container-shape: 10px;
+  --mat-tooltip-container-shape: 6px;
+
+  // App-level tokens
+  --app-radius: 14px;
+  --app-radius-sm: 10px;
+  --app-border: 1px solid var(--mat-sys-outline-variant);
+  --app-success: #4ade80;
+  --app-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 body {
-  // Post-apocalyptic bunker vibe: dark by default.
   color-scheme: dark;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
   margin: 0;
   height: 100%;
 }
@@ -40,24 +87,39 @@ body {
   box-sizing: border-box;
 }
 
+::selection {
+  background: rgba(251, 146, 60, 0.3);
+}
+
 app-root {
   display: block;
   min-height: 100%;
 }
 
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+}
+
 .card-surface {
-  background-color: var(--mat-sys-surface-container);
-  border-radius: 16px;
+  background-color: var(--mat-sys-surface-container-low);
+  border: var(--app-border);
+  border-radius: var(--app-radius);
   padding: 1.25rem;
 
   h2 {
     margin: 0 0 1rem;
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 500;
     color: var(--mat-sys-on-surface-variant);
-    text-transform: uppercase;
-    letter-spacing: 0.05rem;
   }
+}
+
+// Large primary call-to-action used across pages.
+.btn-lg.mat-mdc-button-base {
+  height: 48px;
+  font-size: 0.95rem;
 }
 
 .full-width {
@@ -71,11 +133,106 @@ app-root {
 
 .hint {
   color: var(--mat-sys-on-surface-variant);
-  font-size: 0.85rem;
-  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  margin: 0;
 
   &--warn {
-    color: var(--mat-sys-error);
+    color: var(--mat-sys-on-primary-container);
   }
 }
-/* You can add global styles to this file, and also import other style files */
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+// Shared shell for the small form pages (create / join / rules).
+.form-page {
+  position: relative;
+  display: flex;
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+
+  // Doubled class beats mat-icon-button's own `position: relative`.
+  &__back#{&}__back {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 380px;
+    gap: 1rem;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+  }
+
+  &__lead {
+    margin: -0.5rem 0 0.5rem;
+    color: var(--mat-sys-on-surface-variant);
+    line-height: 1.5;
+  }
+
+  &__error {
+    color: var(--mat-sys-error);
+    margin: 0;
+    font-size: 0.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// Player note popover (rendered in the CDK overlay, so it can't live in the component's styles).
+.note-menu.mat-mdc-menu-panel {
+  max-width: 300px;
+  border: var(--app-border);
+}
+
+.note-menu__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 280px;
+  padding: 0.5rem 0.85rem 0.75rem;
+}
+
+.note-menu__label {
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.note-menu__input {
+  width: 100%;
+  resize: vertical;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: var(--app-radius-sm);
+  background: var(--mat-sys-surface-container-low);
+  color: var(--mat-sys-on-surface);
+  font: inherit;
+  font-size: 0.85rem;
+  outline: none;
+
+  &:focus {
+    border-color: var(--mat-sys-primary);
+  }
+}
+
+.note-menu__save {
+  align-self: flex-end;
+}

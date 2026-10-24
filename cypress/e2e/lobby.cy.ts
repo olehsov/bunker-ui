@@ -5,7 +5,7 @@ describe('Lobby', () => {
 
   it('reflects player count and readiness as bots join and ready up, gating the start button', () => {
     cy.createRoomViaUI('Власник').then((code) => {
-      cy.contains('mat-chip', '/ 16 гравців').should('contain', '1 / 16');
+      cy.contains('.lobby__count', '/ 16 гравців').should('contain', '1 / 16');
       cy.contains('button', 'Розпочати гру').should('be.disabled');
       cy.contains(`Потрібно щонайменше 4 гравці`).should('be.visible');
 
@@ -18,7 +18,7 @@ describe('Lobby', () => {
         }),
       );
 
-      cy.contains('mat-chip', '/ 16 гравців').should('contain', '4 / 16');
+      cy.contains('.lobby__count', '/ 16 гравців').should('contain', '4 / 16');
       cy.contains('.player', 'Боб').within(() => cy.contains('Очікуємо'));
       cy.contains('button', 'Розпочати гру').should('be.disabled');
       cy.contains('Ще не готові: Боб, Ева, Нік').should('be.visible');

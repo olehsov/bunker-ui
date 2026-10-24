@@ -1,6 +1,8 @@
-import { Component, DestroyRef, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Output, computed, effect, inject, input, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RoomPhase, RoomSnapshot } from '../../../../core/models/room.models';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { PHASE_DURATION_SECONDS, RoomPhase, RoomSnapshot } from '../../../../core/models/room.models';
 
 const PHASE_LABELS: Record<RoomPhase, string> = {
   [RoomPhase.LOBBY]: 'Лобі',
@@ -20,12 +22,25 @@ const PHASE_LABELS: Record<RoomPhase, string> = {
  */
 @Component({
   selector: 'app-timer-bar',
-  imports: [MatIconModule],
+  imports: [MatButtonModule, MatIconModule, MatTooltipModule],
   templateUrl: './timer-bar.html',
   styleUrl: './timer-bar.scss',
 })
 export class TimerBar {
   readonly room = input<RoomSnapshot | null>(null);
+  readonly soundOn = input(true);
+
+  @Output() toggleSound = new EventEmitter<void>();
+
+  readonly totalRounds = computed(() => this.room()?.totalRounds || 5);
+
+  readonly roundDots = computed(() => {
+    const round = this.room()?.round ?? 0;
+    const finished = this.room()?.phase === RoomPhase.FINISHED;
+    return Array.from({ length: this.totalRounds() }, (_, i) =>
+      i + 1 < round || finished ? 'done' : i + 1 === round ? 'current' : 'todo',
+    );
+  });
 
   readonly phaseLabel = computed(() => {
     const phase = this.room()?.phase;
@@ -50,6 +65,10 @@ export class TimerBar {
   readonly isRevealPhase = computed(() => this.room()?.phase === RoomPhase.REVEAL);
 
   readonly secondsLeft = signal(0);
+
+  readonly progress = computed(() =>
+    Math.min(100, (this.secondsLeft() / PHASE_DURATION_SECONDS) * 100),
+  );
 
   private intervalId: ReturnType<typeof setInterval> | null = null;
 

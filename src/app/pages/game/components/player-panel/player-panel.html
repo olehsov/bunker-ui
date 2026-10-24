@@ -5,9 +5,7 @@
   [class.panel--self]="player.isSelf"
 >
   <header class="panel__header">
-    <mat-icon class="panel__avatar">
-      {{ player.eliminated ? 'block' : player.isOwner ? 'shield_person' : 'person' }}
-    </mat-icon>
+    <app-avatar [name]="player.name" [seed]="player.id" [size]="28" [muted]="player.eliminated" />
     <span class="panel__name">{{ player.name }}</span>
 
     <span class="panel__badges">

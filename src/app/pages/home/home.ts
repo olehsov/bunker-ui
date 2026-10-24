@@ -11,6 +11,12 @@ import { SeoService } from '../../core/services/seo.service';
   styleUrl: './home.scss',
 })
 export class Home {
+  readonly steps = [
+    { title: 'Отримайте персонажа', text: 'Професія, здоровʼя, фобія, багаж — 9 випадкових характеристик.' },
+    { title: 'Розкривайте карти', text: 'Щораунду відкривайте по одній властивості й переконуйте інших.' },
+    { title: 'Голосуйте', text: 'Вирішіть разом, хто не потрапить до бункера. Вижити мають найкращі.' },
+  ];
+
   constructor() {
     inject(SeoService).setPage({
       title: 'Бункер онлайн українською — безкоштовна браузерна гра',

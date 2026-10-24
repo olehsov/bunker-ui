@@ -150,3 +150,27 @@ export interface JoinRoomResponse {
   playerId: string;
   room: RoomSnapshot;
 }
+
+/** Mirrors REVEAL_TURN_SECONDS / VOTING_DISCUSSION_SECONDS on the backend; used only to draw the progress line. */
+export const PHASE_DURATION_SECONDS = 60;
+
+/**
+ * Mirror of the backend's ELIMINATION_SCHEDULE: votes per round indexed by the
+ * player count at game start. Only used to tell players how many seats the
+ * bunker has.
+ */
+export const ELIMINATION_SCHEDULE: Record<number, number[]> = {
+  4: [0, 0, 0, 1, 1],
+  5: [0, 0, 1, 1, 1],
+  6: [0, 0, 1, 1, 1],
+  7: [0, 1, 1, 1, 1],
+  8: [0, 1, 1, 1, 1],
+  9: [0, 1, 1, 1, 2],
+  10: [0, 1, 1, 1, 2],
+  11: [0, 1, 1, 2, 2],
+  12: [0, 1, 1, 2, 2],
+  13: [0, 1, 2, 2, 2],
+  14: [0, 1, 2, 2, 2],
+  15: [0, 2, 2, 2, 2],
+  16: [0, 2, 2, 2, 2],
+};

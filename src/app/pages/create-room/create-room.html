@@ -1,12 +1,11 @@
-<div class="page">
-  <a routerLink="/" class="back" mat-icon-button aria-label="Назад">
+<div class="form-page">
+  <a routerLink="/" class="form-page__back" mat-icon-button aria-label="Назад">
     <mat-icon>arrow_back</mat-icon>
   </a>
 
-  <div class="card">
-    <mat-icon class="card__icon">add_home</mat-icon>
-    <h1>Створити кімнату</h1>
-    <p class="card__hint">Ви станете власником кімнати та зможете обрати бункер і катаклізм.</p>
+  <div class="form-page__card">
+    <h1 class="form-page__title">Створити кімнату</h1>
+    <p class="form-page__lead">Ви станете власником кімнати й зможете обрати бункер і катаклізм.</p>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Ваше ім'я</mat-label>
@@ -15,21 +14,15 @@
         [(ngModel)]="ownerName"
         (keydown.enter)="createRoom()"
         maxlength="30"
-        autocomplete="off"
+        autocomplete="nickname"
       />
     </mat-form-field>
 
     @if (error()) {
-      <p class="error">{{ error() }}</p>
+      <p class="form-page__error">{{ error() }}</p>
     }
 
-    <button
-      mat-flat-button
-      color="primary"
-      class="full-width"
-      [disabled]="loading()"
-      (click)="createRoom()"
-    >
+    <button mat-flat-button class="full-width btn-lg" [disabled]="loading()" (click)="createRoom()">
       @if (loading()) {
         <mat-spinner diameter="20" />
       } @else {

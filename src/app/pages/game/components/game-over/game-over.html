@@ -1,31 +1,50 @@
 <div class="game-over">
-  <div class="game-over__hero">
-    <mat-icon>emoji_events</mat-icon>
+  <header class="game-over__hero">
+    <span class="game-over__eyebrow">Фінал</span>
     <h1>Гру завершено</h1>
     <p>У бункер потрапили {{ survivors().length }} із {{ room().players.length }} гравців</p>
-  </div>
+    <div class="game-over__actions">
+      <button mat-flat-button routerLink="/create">
+        <mat-icon>replay</mat-icon>
+        Нова гра
+      </button>
+      <button mat-stroked-button (click)="shareResult()">
+        <mat-icon>{{ copied() ? 'check' : 'ios_share' }}</mat-icon>
+        {{ copied() ? 'Скопійовано' : 'Поділитися результатом' }}
+      </button>
+      <button mat-button routerLink="/">
+        <mat-icon>home</mat-icon>
+        На головну
+      </button>
+    </div>
+  </header>
 
-  @if (bunker(); as b) {
-    <section class="card-surface details">
-      <h2>{{ b.name }}</h2>
-      <p>{{ b.description }}</p>
-      <div class="details__stats">
-        <span><mat-icon>square_foot</mat-icon> {{ b.areaSqm }} м²</span>
-        <span><mat-icon>schedule</mat-icon> {{ b.survivalDurationYears }} р. автономності</span>
-      </div>
-      <p class="details__food">{{ b.foodSupplyDescription }}</p>
-    </section>
-  }
-
-  @if (cataclysm(); as c) {
-    <section class="card-surface details">
-      <h2>{{ c.name }}</h2>
-      <p>{{ c.description }}</p>
-    </section>
+  @if (bunker() || cataclysm()) {
+    <div class="scenario">
+      @if (cataclysm(); as c) {
+        <section class="details">
+          <span class="details__kind">Катаклізм</span>
+          <h2>{{ c.name }}</h2>
+          <p>{{ c.description }}</p>
+        </section>
+      }
+      @if (bunker(); as b) {
+        <section class="details">
+          <span class="details__kind">Бункер</span>
+          <h2>{{ b.name }}</h2>
+          <p>{{ b.description }}</p>
+          <div class="details__stats">
+            <span><mat-icon>square_foot</mat-icon> {{ b.areaSqm }} м²</span>
+            <span><mat-icon>schedule</mat-icon> {{ b.survivalDurationYears }} р. автономності</span>
+          </div>
+          <p class="details__food">{{ b.foodSupplyDescription }}</p>
+        </section>
+      }
+    </div>
   }
 
   <section class="group">
-    <h2>Вижили</h2>
+    <h2>Вижили <span>{{ survivors().length }}</span></h2>
     <div class="group__grid">
       @for (player of survivors(); track player.id) {
         <app-player-panel [player]="player" />
@@ -35,7 +54,7 @@
 
   @if (eliminated().length > 0) {
     <section class="group">
-      <h2>Вигнані</h2>
+      <h2>Вигнані <span>{{ eliminated().length }}</span></h2>
       <div class="group__grid">
         @for (player of eliminated(); track player.id) {
           <app-player-panel [player]="player" />
@@ -43,9 +62,4 @@
       </div>
     </section>
   }
-
-  <button mat-stroked-button routerLink="/">
-    <mat-icon>home</mat-icon>
-    На головну
-  </button>
 </div>

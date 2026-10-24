@@ -1,4 +1,5 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CdkDropList, CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -9,9 +10,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiService } from '../../core/services/api.service';
 import { SessionService } from '../../core/services/session.service';
 import { SocketService } from '../../core/services/socket.service';
+import { NotesService } from '../../core/services/notes.service';
+import { TurnAlertService } from '../../core/services/turn-alert.service';
 import {
   BunkerConfig,
   CataclysmConfig,
+  ELIMINATION_SCHEDULE,
   HOBBY_LEVELS,
   PROFESSION_LEVELS,
   RoomPhase,
@@ -50,6 +54,9 @@ export class Game {
   private readonly socket = inject(SocketService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly notesService = inject(NotesService);
+  private readonly turnAlert = inject(TurnAlertService);
+  private readonly title = inject(Title);
 
   readonly RoomPhase = RoomPhase;
 
@@ -64,6 +71,16 @@ export class Game {
   readonly me = computed(() => this.room()?.players.find((p) => p.isSelf) ?? null);
   readonly isOwner = computed(() => !!this.me()?.isOwner);
   readonly players = computed(() => this.room()?.players ?? []);
+  readonly aliveCount = computed(() => this.players().filter((p) => !p.eliminated).length);
+  readonly notes = this.notesService.notes;
+  readonly soundOn = this.turnAlert.soundOn;
+
+  /** Players eliminated stay in `players`, so its length is the starting headcount. */
+  readonly seats = computed(() => {
+    const total = this.players().length;
+    const votes = (ELIMINATION_SCHEDULE[total] ?? []).reduce((a, b) => a + b, 0);
+    return total - votes;
+  });
 
   readonly bunker = computed(
     () => this.bunkers().find((b) => b.id === this.room()?.bunkerId) ?? null,
@@ -89,7 +106,7 @@ export class Game {
   readonly hobbyLevels = HOBBY_LEVELS;
   readonly TraitCategory = TraitCategory;
 
-  readonly scenarioExpanded = signal(true);
+  readonly scenarioExpanded = signal(false);
 
   readonly professionLevelsTooltip = `Можливі рівні стажу:\n${PROFESSION_LEVELS.join('\n')}`;
   readonly hobbyLevelsTooltip = `Можливі рівні володіння:\n${HOBBY_LEVELS.join('\n')}`;
@@ -118,6 +135,27 @@ export class Game {
     this.socket.error$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((message) => {
       this.snackBar.open(message, 'Ок', { duration: 4000 });
     });
+
+    this.notesService.useRoom(this.code);
+
+    let wasMyTurn = false;
+    effect(() => {
+      const myTurn = this.isMyTurn();
+      if (myTurn && !wasMyTurn) {
+        this.turnAlert.alert();
+      }
+      wasMyTurn = myTurn;
+      this.title.setTitle(myTurn ? '● Ваш хід — Бункер' : 'Бункер');
+    });
+    this.destroyRef.onDestroy(() => this.title.setTitle('Бункер'));
+  }
+
+  toggleSound(): void {
+    this.turnAlert.toggleSound();
+  }
+
+  setNote(playerId: string, text: string): void {
+    this.notesService.set(playerId, text);
   }
 
   toggleScenario(): void {

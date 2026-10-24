@@ -45,7 +45,7 @@ describe('SEO', () => {
     // Prerendered output check: fetch the raw HTML (no JS execution) and look
     // for real page content, not just an empty <app-root></app-root> shell.
     cy.request('/').then((res) => {
-      expect(res.body).to.contain('БУНКЕР');
+      expect(res.body).to.contain('Бункер');
       expect(res.body).to.contain('Створити кімнату');
     });
   });
