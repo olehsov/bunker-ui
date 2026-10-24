@@ -1,11 +1,30 @@
 <div class="tray">
   <div class="tray__label">
-    <span>Ваші картки <span class="tray__count">· {{ hiddenTraits().length }} закрито</span></span>
+    <span>
+      Ваші картки <span class="tray__count">· {{ hiddenTraits().length }} закрито</span>
+      @if (unplayedSpecial().length) {
+        <span class="tray__count">· {{ unplayedSpecial().length }} особл. умов</span>
+      }
+    </span>
     @if (canReveal()) {
       <span class="tray__hint">Натисніть або перетягніть картку вгору, щоб відкрити</span>
     }
   </div>
 
+  <div class="tray__row">
+  @if (unplayedSpecial().length) {
+    <div class="tray__special">
+      @for (card of unplayedSpecial(); track card.id) {
+        <app-special-card
+          [card]="card"
+          [playable]="isPlayable(card)"
+          [disabledReason]="disabledReason(card)"
+          (activated)="onSpecialClick(card)"
+        />
+      }
+    </div>
+    <span class="tray__divider" aria-hidden="true"></span>
+  }
   <div
     class="tray__list"
     cdkDropList
@@ -32,5 +51,6 @@
     } @empty {
       <p class="tray__empty">Усі ваші картки відкриті.</p>
     }
+  </div>
   </div>
 </div>

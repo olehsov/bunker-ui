@@ -1,0 +1,71 @@
+:host {
+  display: block;
+}
+
+// Violet distinguishes "special conditions" from the neutral trait cards and
+// the orange "your turn" accent.
+.special-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.4rem;
+  width: 140px;
+  height: 100px;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--app-radius-sm);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  background: linear-gradient(160deg, rgba(167, 139, 250, 0.1), transparent 70%),
+    var(--mat-sys-surface-container-low);
+  user-select: none;
+
+  &--playable {
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      border-color: var(--mat-sys-tertiary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--mat-sys-tertiary);
+      outline-offset: 2px;
+    }
+  }
+
+  &:not(&--playable):not(&--used) {
+    opacity: 0.6;
+  }
+
+  &--used {
+    opacity: 0.5;
+    border-style: dashed;
+  }
+
+  &--compact {
+    width: 112px;
+    height: 80px;
+    padding: 0.5rem 0.6rem;
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    color: var(--mat-sys-on-tertiary-container);
+    white-space: nowrap;
+
+    mat-icon {
+      font-size: 15px;
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  &__title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+}

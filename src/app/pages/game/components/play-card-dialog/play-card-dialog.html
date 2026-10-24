@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>
+  <span class="title">
+    <mat-icon>{{ icons[data.card.type] }}</mat-icon>
+    {{ data.card.title }}
+  </span>
+</h2>
+
+<mat-dialog-content>
+  <p class="description">{{ data.card.description }}</p>
+
+  @if (needsTarget) {
+    <p class="label">Оберіть гравця</p>
+    <ul class="targets" role="listbox" aria-label="Гравець">
+      @for (player of targets(); track player.id) {
+        <li
+          class="target"
+          role="option"
+          tabindex="0"
+          [attr.aria-selected]="selectedId() === player.id"
+          [class.target--selected]="selectedId() === player.id"
+          (click)="selectedId.set(player.id)"
+          (keydown.enter)="selectedId.set(player.id)"
+          (keydown.space)="selectedId.set(player.id); $event.preventDefault()"
+        >
+          <app-avatar [name]="player.name" [seed]="player.id" [size]="28" />
+          <span class="target__name">{{ player.name }}{{ player.id === data.me.id ? ' (ви)' : '' }}</span>
+          @if (selectedId() === player.id) {
+            <mat-icon class="target__check">check_circle</mat-icon>
+          }
+        </li>
+      }
+    </ul>
+  }
+
+  <p class="warning">Зіграну картку побачать усі гравці, скасувати це неможливо.</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Скасувати</button>
+  <button mat-flat-button [disabled]="!canConfirm()" (click)="confirm()">Зіграти</button>
+</mat-dialog-actions>

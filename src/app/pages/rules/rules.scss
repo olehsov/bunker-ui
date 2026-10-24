@@ -124,3 +124,33 @@
   line-height: 1.7;
   color: var(--mat-sys-on-surface-variant);
 }
+
+.special {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  line-height: 1.5;
+  color: var(--mat-sys-on-surface-variant);
+
+  li {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  strong {
+    color: var(--mat-sys-on-surface);
+    font-weight: 500;
+  }
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-top: 0.15rem;
+    color: var(--mat-sys-tertiary);
+  }
+}

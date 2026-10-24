@@ -1,0 +1,16 @@
+<section class="log">
+  <h2 class="log__title">Події</h2>
+  @if (newestFirst().length) {
+    <ol class="log__list">
+      @for (entry of newestFirst(); track entry.id) {
+        <li [class]="'entry entry--' + entry.kind">
+          <mat-icon>{{ icons[entry.kind] }}</mat-icon>
+          <span class="entry__text">{{ entry.text }}</span>
+          <time class="entry__time">{{ entry.at | date: 'HH:mm' }}</time>
+        </li>
+      }
+    </ol>
+  } @else {
+    <p class="log__empty">Поки нічого не сталося.</p>
+  }
+</section>

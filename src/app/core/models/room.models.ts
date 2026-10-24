@@ -71,6 +71,50 @@ export const PROFESSION_LEVELS: string[] = [
 
 export const HOBBY_LEVELS: string[] = ['Новачок', 'Аматор', 'Досвідчений', 'Просунутий', 'Майстер'];
 
+export enum SpecialCardType {
+  SWAP_TRAIT = 'SWAP_TRAIT',
+  REROLL_OWN = 'REROLL_OWN',
+  REROLL_TARGET = 'REROLL_TARGET',
+  HEAL = 'HEAL',
+  PEEK = 'PEEK',
+  FORCE_REVEAL = 'FORCE_REVEAL',
+  IMMUNITY = 'IMMUNITY',
+  DOUBLE_VOTE = 'DOUBLE_VOTE',
+  REVOTE = 'REVOTE',
+}
+
+export const SPECIAL_CARD_ICONS: Record<SpecialCardType, string> = {
+  [SpecialCardType.SWAP_TRAIT]: 'swap_horiz',
+  [SpecialCardType.REROLL_OWN]: 'casino',
+  [SpecialCardType.REROLL_TARGET]: 'local_fire_department',
+  [SpecialCardType.HEAL]: 'medical_services',
+  [SpecialCardType.PEEK]: 'visibility',
+  [SpecialCardType.FORCE_REVEAL]: 'flashlight_on',
+  [SpecialCardType.IMMUNITY]: 'shield',
+  [SpecialCardType.DOUBLE_VOTE]: 'exposure_plus_2',
+  [SpecialCardType.REVOTE]: 'restart_alt',
+};
+
+/** Mirrors the backend's SpecialCard: own cards are always sent, others' only once played. */
+export interface SpecialCard {
+  id: string;
+  type: SpecialCardType;
+  category?: TraitCategory;
+  title: string;
+  description: string;
+  timing: 'ANY' | 'VOTING';
+  target: 'none' | 'other' | 'any';
+  used: boolean;
+  targetPlayerId: string | null;
+}
+
+export interface GameLogEntry {
+  id: number;
+  at: number;
+  kind: 'round' | 'card' | 'elimination';
+  text: string;
+}
+
 export interface TraitCard {
   label: string;
   detail?: string;
@@ -93,6 +137,8 @@ export interface PlayerView {
   hasTraits: boolean;
   traits: TraitCardView[];
   publiclyRevealedCategories: TraitCategory[];
+  specialCards: SpecialCard[];
+  specialCardsLeft: number;
 }
 
 export interface VotingView {
@@ -102,6 +148,8 @@ export interface VotingView {
   allVoted: boolean;
   lastResult: 'TIE' | 'ELIMINATED' | null;
   tiedPlayerIds: string[];
+  immunePlayerIds: string[];
+  doubleVoterIds: string[];
 }
 
 export interface RoomSnapshot {
@@ -120,6 +168,7 @@ export interface RoomSnapshot {
   voting: VotingView | null;
   players: PlayerView[];
   viewerPlayerId: string | null;
+  log: GameLogEntry[];
 }
 
 export interface BunkerConfig {

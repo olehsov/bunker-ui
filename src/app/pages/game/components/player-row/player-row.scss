@@ -145,6 +145,12 @@ td {
     background: var(--mat-sys-error-container);
     color: var(--mat-sys-on-error-container);
   }
+
+  &--special {
+    background: var(--mat-sys-tertiary-container);
+    color: var(--mat-sys-on-tertiary-container);
+    cursor: help;
+  }
 }
 
 .row__cell {

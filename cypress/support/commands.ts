@@ -150,7 +150,7 @@ Cypress.Commands.add('playOutRevealPhase', (pollPlayerId: string, botIds: string
       }
       // Not a bot, so it must be the real player's turn — reveal via the UI.
       return cy
-        .get('.tray [role="button"]', { timeout: 10000 })
+        .get('.tray__list [role="button"]', { timeout: 10000 })
         .first()
         .click()
         .then(() => cy.contains('button', 'Відкрити').click())

@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { CreateRoom } from './pages/create-room/create-room';
 import { JoinRoom } from './pages/join-room/join-room';
-import { Lobby } from './pages/lobby/lobby';
-import { Game } from './pages/game/game';
 import { Rules } from './pages/rules/rules';
 
 export const routes: Routes = [
@@ -11,7 +9,8 @@ export const routes: Routes = [
   { path: 'create', component: CreateRoom },
   { path: 'join', component: JoinRoom },
   { path: 'rules', component: Rules },
-  { path: 'room/:code/lobby', component: Lobby },
-  { path: 'room/:code/game', component: Game },
+  // Room pages carry socket.io, CDK drag-drop and the game UI; load them only when entering a room.
+  { path: 'room/:code/lobby', loadComponent: () => import('./pages/lobby/lobby').then((m) => m.Lobby) },
+  { path: 'room/:code/game', loadComponent: () => import('./pages/game/game').then((m) => m.Game) },
   { path: '**', redirectTo: '' },
 ];

@@ -36,6 +36,18 @@ export class PlayerRow {
     setTimeout(() => this.noteInput?.nativeElement.focus());
   }
 
+  get usedCardsSummary(): string {
+    return this.player.specialCards
+      .filter((c) => c.used)
+      .map((c) => `✓ ${c.title}`)
+      .join('\n');
+  }
+
+  get specialTooltip(): string {
+    const left = `Особливих умов на руках: ${this.player.specialCardsLeft}`;
+    return this.usedCardsSummary ? `${left}\n${this.usedCardsSummary}` : left;
+  }
+
   saveNote(): void {
     this.noteChange.emit(this.draft);
     this.menuTrigger?.closeMenu();

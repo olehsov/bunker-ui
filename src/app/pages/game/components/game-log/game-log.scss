@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+
+.log {
+  padding: 1rem 1.25rem;
+  border: var(--app-border);
+  border-radius: var(--app-radius);
+  background: var(--mat-sys-surface-container-low);
+
+  &__title {
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 220px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: auto;
+  }
+
+  &__empty {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-top: 0.1rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &--card mat-icon {
+    color: var(--mat-sys-tertiary);
+  }
+
+  &--elimination mat-icon {
+    color: var(--mat-sys-error);
+  }
+
+  &__text {
+    flex: 1;
+  }
+
+  &__time {
+    font-family: var(--app-mono);
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}

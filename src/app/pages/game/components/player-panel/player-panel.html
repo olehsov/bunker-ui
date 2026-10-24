@@ -35,4 +35,12 @@
       />
     }
   </div>
+
+  @if (player.specialCards.length) {
+    <div class="panel__grid">
+      @for (card of player.specialCards; track card.id) {
+        <app-special-card [card]="card" [compact]="true" />
+      }
+    </div>
+  }
 </div>

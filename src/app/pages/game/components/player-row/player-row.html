@@ -23,6 +23,13 @@
         @if (player.eliminated) {
           <span class="tag tag--eliminated">Вигнаний</span>
         }
+        @if (player.specialCardsLeft > 0 || usedCardsSummary) {
+          <span
+            class="tag tag--special"
+            [matTooltip]="specialTooltip"
+            matTooltipClass="multiline-tooltip"
+          >✦ {{ player.specialCardsLeft }}</span>
+        }
         @if (note && !player.isSelf) {
           <span class="row__note" [matTooltip]="note">{{ note }}</span>
         }
