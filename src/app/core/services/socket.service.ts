@@ -19,6 +19,10 @@ export class SocketService {
   private readonly errorSubject = new Subject<string>();
   readonly error$ = this.errorSubject.asObservable();
 
+  /** Fires when the owner kicks this player out of the lobby. */
+  private readonly kickedSubject = new Subject<void>();
+  readonly kicked$ = this.kickedSubject.asObservable();
+
   /** Connects only if not already connected to this exact room+player. Safe to call from every page. */
   ensureConnected(code: string, playerId: string): void {
     if (this.socket && this.activeCode === code && this.activePlayerId === playerId) {
@@ -41,6 +45,7 @@ export class SocketService {
     this.socket.on('connect', () => this._connected.set(true));
     this.socket.on('disconnect', () => this._connected.set(false));
     this.socket.on('room:state', (state: RoomSnapshot) => this._room.set(state));
+    this.socket.on('room:kicked', () => this.kickedSubject.next());
     this.socket.on('room:error', (payload: { message: string }) =>
       this.errorSubject.next(payload.message),
     );
@@ -69,6 +74,10 @@ export class SocketService {
 
   selectCataclysm(cataclysmId: string): void {
     this.socket?.emit('owner:selectCataclysm', { cataclysmId });
+  }
+
+  kickPlayer(playerId: string): void {
+    this.socket?.emit('owner:kickPlayer', { playerId });
   }
 
   startGame(): void {

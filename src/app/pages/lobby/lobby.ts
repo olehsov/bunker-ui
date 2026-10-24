@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiService } from '../../core/services/api.service';
 import { SessionService } from '../../core/services/session.service';
 import { SocketService } from '../../core/services/socket.service';
-import { BunkerConfig, CataclysmConfig, MAX_PLAYERS, MIN_PLAYERS, RoomPhase } from '../../core/models/room.models';
+import { BunkerConfig, CataclysmConfig, MAX_PLAYERS, MIN_PLAYERS, PlayerView, RoomPhase } from '../../core/models/room.models';
 import { Avatar } from '../../shared/avatar/avatar';
 
 @Component({
@@ -109,6 +109,13 @@ export class Lobby {
       this.snackBar.open(message, 'Ок', { duration: 4000 });
     });
 
+    this.socket.kicked$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.session.clear(this.code);
+      this.socket.disconnect();
+      this.router.navigate(['/']);
+      this.snackBar.open('Власник прибрав вас із кімнати', 'Ок', { duration: 5000 });
+    });
+
     effect(() => {
       const me = this.me();
       if (me && !this.nameDraft()) {
@@ -146,6 +153,11 @@ export class Lobby {
     // Only the URL: share targets like "Copy link" concatenate `text` onto
     // the URL, which then lands in the join page's code param.
     navigator.share({ title: 'Бункер', url: this.inviteUrl }).catch(() => undefined);
+  }
+
+  kick(player: PlayerView): void {
+    this.socket.kickPlayer(player.id);
+    this.snackBar.open(`${player.name} більше не в кімнаті`, undefined, { duration: 2500 });
   }
 
   randomizeScenario(): void {

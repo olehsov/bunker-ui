@@ -200,6 +200,15 @@
     height: 18px;
   }
 
+  &__kick {
+    margin: -0.5rem -0.5rem -0.5rem -0.25rem;
+    color: var(--mat-sys-on-surface-variant);
+
+    &:hover {
+      color: var(--mat-sys-error);
+    }
+  }
+
   &--empty {
     color: var(--mat-sys-outline);
 
