@@ -61,6 +61,17 @@
             } @else {
               <span class="badge badge--waiting">Очікуємо</span>
             }
+            @if (isOwner() && !player.isOwner) {
+              <button
+                mat-icon-button
+                class="player__kick"
+                (click)="kick(player)"
+                [matTooltip]="'Вигнати ' + player.name"
+                [attr.aria-label]="'Вигнати ' + player.name"
+              >
+                <mat-icon>person_remove</mat-icon>
+              </button>
+            }
           </li>
         }
         @for (slot of emptySlots(); track $index) {

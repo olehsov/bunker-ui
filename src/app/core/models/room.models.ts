@@ -111,7 +111,7 @@ export interface SpecialCard {
 export interface GameLogEntry {
   id: number;
   at: number;
-  kind: 'round' | 'card' | 'elimination';
+  kind: 'round' | 'card' | 'elimination' | 'vote';
   text: string;
 }
 

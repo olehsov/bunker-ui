@@ -7,6 +7,7 @@ const KIND_ICONS: Record<GameLogEntry['kind'], string> = {
   round: 'flag',
   card: 'auto_awesome',
   elimination: 'logout',
+  vote: 'how_to_vote',
 };
 
 /** Newest-first feed of what happened: rounds, played special cards, eliminations. */
