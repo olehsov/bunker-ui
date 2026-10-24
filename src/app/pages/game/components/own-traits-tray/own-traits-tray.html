@@ -1,6 +1,6 @@
 <div class="tray">
   <div class="tray__label">
-    <span>Ваші картки</span>
+    <span>Ваші картки <span class="tray__count">· {{ hiddenTraits().length }} закрито</span></span>
     @if (canReveal()) {
       <span class="tray__hint">Натисніть або перетягніть картку вгору, щоб відкрити</span>
     }
@@ -29,6 +29,8 @@
           (activated)="onCardClick(trait)"
         />
       </div>
+    } @empty {
+      <p class="tray__empty">Усі ваші картки відкриті.</p>
     }
   </div>
 </div>

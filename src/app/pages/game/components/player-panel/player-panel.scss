@@ -6,19 +6,18 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  padding: 0.85rem;
-  border-radius: 14px;
-  background: var(--mat-sys-surface-container);
-  border: 2px solid transparent;
+  padding: 1rem;
+  border-radius: var(--app-radius);
+  background: var(--mat-sys-surface-container-low);
+  border: var(--app-border);
   transition: border-color 0.2s ease, opacity 0.2s ease;
 
   &--active {
     border-color: var(--mat-sys-primary);
-    box-shadow: 0 0 0 1px var(--mat-sys-primary);
   }
 
   &--self {
-    background: var(--mat-sys-surface-container-high);
+    border-color: var(--mat-sys-outline);
   }
 
   &--eliminated {
@@ -29,10 +28,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-  }
-
-  &__avatar {
-    color: var(--mat-sys-on-surface-variant);
   }
 
   &__name {
@@ -65,13 +60,13 @@
 
 .tag {
   font-size: 0.68rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
   white-space: nowrap;
 
   &--self {
-    background: var(--mat-sys-secondary-container);
-    color: var(--mat-sys-on-secondary-container);
+    background: var(--mat-sys-surface-container-highest);
+    color: var(--mat-sys-on-surface);
   }
 
   &--active {

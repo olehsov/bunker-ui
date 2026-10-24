@@ -10,5 +10,6 @@ export const serverRoutes: ServerRoute[] = [
   { path: '', renderMode: RenderMode.Prerender },
   { path: 'create', renderMode: RenderMode.Prerender },
   { path: 'join', renderMode: RenderMode.Prerender },
+  { path: 'rules', renderMode: RenderMode.Prerender },
   { path: '**', renderMode: RenderMode.Client },
 ];

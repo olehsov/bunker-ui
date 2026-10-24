@@ -2,10 +2,11 @@ import { Component, EventEmitter, Output, computed, input } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RoomSnapshot } from '../../../../core/models/room.models';
+import { Avatar } from '../../../../shared/avatar/avatar';
 
 @Component({
   selector: 'app-voting-panel',
-  imports: [MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule, Avatar],
   templateUrl: './voting-panel.html',
   styleUrl: './voting-panel.scss',
 })
@@ -31,6 +32,11 @@ export class VotingPanel {
       return;
     }
     this.vote.emit(targetId);
+  }
+
+  votePercent(candidateId: string): number {
+    const total = this.votedCount();
+    return total ? (this.voteCountFor(candidateId) / total) * 100 : 0;
   }
 
   voteCountFor(candidateId: string): number {

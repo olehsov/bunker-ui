@@ -5,24 +5,57 @@
   [class.row__player--self]="player.isSelf"
 >
   <div class="row__player_wrapper">
-    <mat-icon class="row__avatar">
-      {{ player.eliminated ? 'block' : player.isOwner ? 'shield_person' : 'person' }}
-    </mat-icon>
-    <span class="row__name">{{ player.name }}</span>
-    <span class="row__badges">
-    @if (player.isSelf) {
-      <span class="tag tag--self">Ви</span>
+    <app-avatar [name]="player.name" [seed]="player.id" [size]="28" [muted]="player.eliminated" />
+    <div class="row__info">
+      <span class="row__name">
+        {{ player.name }}
+        @if (!player.connected) {
+          <mat-icon class="row__offline" matTooltip="Немає з'єднання">wifi_off</mat-icon>
+        }
+      </span>
+      <span class="row__badges">
+        @if (player.isSelf) {
+          <span class="tag tag--self">Ви</span>
+        }
+        @if (active && !player.eliminated) {
+          <span class="tag tag--active" matTooltip="Зараз хід цього гравця">Ходить</span>
+        }
+        @if (player.eliminated) {
+          <span class="tag tag--eliminated">Вигнаний</span>
+        }
+        @if (note && !player.isSelf) {
+          <span class="row__note" [matTooltip]="note">{{ note }}</span>
+        }
+      </span>
+    </div>
+    @if (!player.isSelf) {
+      <button
+        class="row__note-btn"
+        [class.row__note-btn--filled]="!!note"
+        [matMenuTriggerFor]="noteMenu"
+        (menuOpened)="onMenuOpened()"
+        [attr.aria-label]="'Нотатка про ' + player.name"
+        matTooltip="Особиста нотатка (бачите лише ви)"
+      >
+        <mat-icon>{{ note ? 'sticky_note_2' : 'edit_note' }}</mat-icon>
+      </button>
+      <mat-menu #noteMenu="matMenu" class="note-menu" xPosition="after">
+        <div class="note-menu__body" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+          <label class="note-menu__label" [for]="'note-' + player.id">Нотатка про {{ player.name }}</label>
+          <textarea
+            #noteInput
+            [id]="'note-' + player.id"
+            class="note-menu__input"
+            rows="3"
+            maxlength="200"
+            placeholder="Напр.: каже, що лікар, але приховує здоровʼя"
+            [(ngModel)]="draft"
+            (keydown.enter)="$event.preventDefault(); saveNote()"
+          ></textarea>
+          <button mat-flat-button class="note-menu__save" (click)="saveNote()">Зберегти</button>
+        </div>
+      </mat-menu>
     }
-      @if (active && !player.eliminated) {
-        <span class="tag tag--active" matTooltip="Зараз хід цього гравця">Ходить</span>
-      }
-      @if (player.eliminated) {
-        <span class="tag tag--eliminated">Вигнаний</span>
-      }
-      @if (!player.connected) {
-        <mat-icon class="row__offline" matTooltip="Немає з'єднання">wifi_off</mat-icon>
-      }
-  </span>
   </div>
 </td>
 
@@ -43,7 +76,7 @@
         </mat-icon>
       }
     } @else {
-      <mat-icon class="cell__lock">lock</mat-icon>
+      <span class="cell__lock" aria-label="Приховано"></span>
     }
   </td>
 }

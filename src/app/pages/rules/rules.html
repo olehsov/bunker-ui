@@ -1,0 +1,52 @@
+<div class="rules">
+  <a routerLink="/" class="rules__back" mat-icon-button aria-label="Назад">
+    <mat-icon>arrow_back</mat-icon>
+  </a>
+
+  <header class="rules__header">
+    <h1>Правила гри</h1>
+    <p>
+      Світ пережив катастрофу. Є бункер, але місць у ньому менше, ніж людей. За 5 раундів
+      група з {{ minPlayers }}–{{ maxPlayers }} гравців має вирішити, кого залишити за дверима.
+    </p>
+  </header>
+
+  <section class="rules__section">
+    <h2>Персонаж</h2>
+    <p class="rules__text">Кожен отримує 9 випадкових характеристик. Спочатку їх бачите лише ви.</p>
+    <ul class="traits">
+      @for (category of categories; track category) {
+        <li>
+          <mat-icon>{{ icons[category] }}</mat-icon>
+          {{ labels[category] }}
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="rules__section">
+    <h2>Хід гри</h2>
+    <ol class="timeline">
+      @for (phase of phases; track phase.title) {
+        <li>
+          <strong>{{ phase.title }}</strong>
+          <p>{{ phase.text }}</p>
+        </li>
+      }
+    </ol>
+  </section>
+
+  <section class="rules__section">
+    <h2>Поради</h2>
+    <ul class="tips">
+      <li>Розкривайте сильні карти тоді, коли вони найбільше потрібні — не обов'язково одразу.</li>
+      <li>Думайте про команду: лікар без здоров'я чи інженер з фобією замкнених просторів — питання.</li>
+      <li>Ведіть нотатки про інших гравців — це можна робити прямо в грі.</li>
+    </ul>
+  </section>
+
+  <div class="rules__cta">
+    <button mat-flat-button class="btn-lg" routerLink="/create">Створити кімнату</button>
+    <button mat-stroked-button class="btn-lg" routerLink="/join">Приєднатись</button>
+  </div>
+</div>

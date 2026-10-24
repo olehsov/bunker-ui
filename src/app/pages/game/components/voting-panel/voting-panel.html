@@ -1,18 +1,23 @@
-<div class="voting card-surface">
-  <h2>Голосування</h2>
+<div class="voting">
+  <div class="voting__head">
+    <h2>Голосування</h2>
+    @if (!isTie()) {
+      <span class="voting__status">Проголосувало: {{ votedCount() }} / {{ candidates().length }}</span>
+    }
+  </div>
 
   @if (isTie()) {
     <div class="tie-banner">
       <mat-icon>balance</mat-icon>
       <span>Нічия! Потрібно перезапустити голосування.</span>
       @if (isOwner()) {
-        <button mat-flat-button color="primary" (click)="restartVoting.emit()">
-          Перезапустити голосування
-        </button>
+        <button mat-flat-button (click)="restartVoting.emit()">Перезапустити голосування</button>
       }
     </div>
   } @else {
-    <p class="voting__status">Проголосувало: {{ votedCount() }} / {{ candidates().length }}</p>
+    <p class="voting__lead">
+      {{ myVote() ? 'Голос прийнято — можна змінити до завершення.' : 'Оберіть, кого вигнати з бункера.' }}
+    </p>
 
     <ul class="candidates">
       @for (candidate of candidates(); track candidate.id) {
@@ -24,16 +29,23 @@
           role="button"
           [attr.tabindex]="candidate.id === myPlayerId() ? null : 0"
           [attr.aria-label]="'Голосувати за ' + candidate.name"
+          [attr.aria-pressed]="myVote() === candidate.id"
           (click)="voteFor(candidate.id)"
           (keydown.enter)="voteFor(candidate.id)"
           (keydown.space)="voteFor(candidate.id); $event.preventDefault()"
         >
-          <mat-icon>person</mat-icon>
-          <span class="candidate__name">{{ candidate.name }}</span>
-          <span class="candidate__votes">{{ voteCountFor(candidate.id) }}</span>
+          <span class="candidate__bar" [style.width.%]="votePercent(candidate.id)"></span>
+          <app-avatar [name]="candidate.name" [seed]="candidate.id" [size]="28" />
+          <span class="candidate__name">
+            {{ candidate.name }}
+            @if (candidate.id === myPlayerId()) {
+              <small>ви</small>
+            }
+          </span>
           @if (myVote() === candidate.id) {
             <mat-icon class="candidate__check">check_circle</mat-icon>
           }
+          <span class="candidate__votes">{{ voteCountFor(candidate.id) }}</span>
         </li>
       }
     </ul>
@@ -41,7 +53,6 @@
     @if (isOwner()) {
       <button
         mat-flat-button
-        color="primary"
         class="full-width"
         [disabled]="votedCount() < candidates().length"
         (click)="endVoting.emit()"

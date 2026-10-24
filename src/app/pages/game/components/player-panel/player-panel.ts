@@ -3,10 +3,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PlayerView } from '../../../../core/models/room.models';
 import { TraitCard } from '../trait-card/trait-card';
+import { Avatar } from '../../../../shared/avatar/avatar';
 
 @Component({
   selector: 'app-player-panel',
-  imports: [MatIconModule, MatTooltipModule, TraitCard],
+  imports: [MatIconModule, MatTooltipModule, TraitCard, Avatar],
   templateUrl: './player-panel.html',
   styleUrl: './player-panel.scss',
 })

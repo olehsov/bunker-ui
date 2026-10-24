@@ -1,33 +1,32 @@
 import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDividerModule } from '@angular/material/divider';
 import { ApiService } from '../../core/services/api.service';
 import { SessionService } from '../../core/services/session.service';
 import { SocketService } from '../../core/services/socket.service';
 import { BunkerConfig, CataclysmConfig, MAX_PLAYERS, MIN_PLAYERS, RoomPhase } from '../../core/models/room.models';
+import { Avatar } from '../../shared/avatar/avatar';
 
 @Component({
   selector: 'app-lobby',
   imports: [
     FormsModule,
+    RouterLink,
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatChipsModule,
     MatTooltipModule,
-    MatDividerModule,
+    Avatar,
   ],
   templateUrl: './lobby.html',
   styleUrl: './lobby.scss',
@@ -51,11 +50,20 @@ export class Lobby {
   readonly cataclysms = signal<CataclysmConfig[]>([]);
   readonly nameDraft = signal('');
   readonly codeCopied = signal(false);
+  readonly linkCopied = signal(false);
+  readonly canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
   readonly me = computed(() => this.room()?.players.find((p) => p.isSelf) ?? null);
   readonly isOwner = computed(() => !!this.me()?.isOwner);
   readonly players = computed(() => this.room()?.players ?? []);
   readonly playerCount = computed(() => this.players().length);
+  /** Owner counts as ready — they signal readiness by pressing "start". */
+  readonly readyCount = computed(() => this.players().filter((p) => p.isOwner || p.ready).length);
+  readonly readyPercent = computed(() =>
+    this.playerCount() ? (this.readyCount() / this.playerCount()) * 100 : 0,
+  );
+  /** Placeholder rows that show how many more people are needed to start. */
+  readonly emptySlots = computed(() => Array(Math.max(0, MIN_PLAYERS - this.playerCount())));
 
   readonly selectedBunker = computed(() =>
     this.bunkers().find((b) => b.id === this.room()?.bunkerId) ?? null,
@@ -116,11 +124,44 @@ export class Lobby {
     });
   }
 
+  private get inviteUrl(): string {
+    return `${location.origin}/join?code=${this.code}`;
+  }
+
   copyCode(): void {
     navigator.clipboard.writeText(this.code).then(() => {
       this.codeCopied.set(true);
       setTimeout(() => this.codeCopied.set(false), 1500);
     });
+  }
+
+  copyInviteLink(): void {
+    navigator.clipboard.writeText(this.inviteUrl).then(() => {
+      this.linkCopied.set(true);
+      setTimeout(() => this.linkCopied.set(false), 1500);
+    });
+  }
+
+  shareInvite(): void {
+    navigator
+      .share({
+        title: 'Бункер',
+        text: `Приєднуйся до гри «Бункер»! Код кімнати: ${this.code}`,
+        url: this.inviteUrl,
+      })
+      .catch(() => undefined);
+  }
+
+  randomizeScenario(): void {
+    const pick = <T>(list: T[]): T | undefined => list[Math.floor(Math.random() * list.length)];
+    const bunker = pick(this.bunkers());
+    const cataclysm = pick(this.cataclysms());
+    if (bunker) {
+      this.socket.selectBunker(bunker.id);
+    }
+    if (cataclysm) {
+      this.socket.selectCataclysm(cataclysm.id);
+    }
   }
 
   saveName(): void {
