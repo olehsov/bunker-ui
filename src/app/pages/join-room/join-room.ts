@@ -30,7 +30,9 @@ export class JoinRoom {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  readonly code = signal(this.route.snapshot.queryParamMap.get('code')?.toUpperCase() ?? '');
+  // Pull the 6-digit code out of the param, so links pasted with extra text
+  // ("864422 Приєднуйся до гри…") still work.
+  readonly code = signal(this.route.snapshot.queryParamMap.get('code')?.match(/\d{6}/)?.[0] ?? '');
   readonly playerName = signal('');
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);

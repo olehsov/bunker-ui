@@ -143,13 +143,9 @@ export class Lobby {
   }
 
   shareInvite(): void {
-    navigator
-      .share({
-        title: 'Бункер',
-        text: `Приєднуйся до гри «Бункер»! Код кімнати: ${this.code}`,
-        url: this.inviteUrl,
-      })
-      .catch(() => undefined);
+    // Only the URL: share targets like "Copy link" concatenate `text` onto
+    // the URL, which then lands in the join page's code param.
+    navigator.share({ title: 'Бункер', url: this.inviteUrl }).catch(() => undefined);
   }
 
   randomizeScenario(): void {
